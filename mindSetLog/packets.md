@@ -1,0 +1,23 @@
+"dependencies": {
+"@babel/preset-react": "^7.14.5",
+"axios": "^1.2.2",
+"babel-loader": "^8.2.2",
+"bcryptjs": "^2.4.3",
+"body-parser": "^1.20.1",
+"cors": "^2.8.5",
+"dotenv": "^16.0.3",
+"ejs": "^3.1.8",
+"express": "^4.18.2",
+"mysql2": "^2.3.3",
+"react": "^18.2.0",
+"react-dom": "^18.2.0",
+"sequelize": "^6.28.0"
+
+"devDependencies": {
+"@babel/core": "^7.12.10",
+"@babel/node": "^7.12.10",
+"@babel/preset-env": "^7.12.10",
+"nodemon": "^2.0.20",
+"sequelize-cli": "^6.2.0",
+"webpack": "^5.55.0",
+"webpack-cli": "^4.8.0"
