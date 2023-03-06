@@ -1,3 +1,4 @@
 /node_modules
 .env
 restApi.http
+mytoken.txt

@@ -29,20 +29,6 @@ let comparePassword = (password, decryptPassword) => {
   return password === decryptPassword ? true : false;
 };
 
-// generate token
-let generateToken = async (payload, key, timelife) => {
-  return await jwt.sign(
-    {
-      payload,
-    },
-    key,
-    {
-      algorithm: "HS256",
-      expiresIn: timelife,
-    }
-  );
-};
-
 // signup
 let signup = (user) => {
   return new Promise(async (resovle, reject) => {
@@ -74,22 +60,21 @@ let signup = (user) => {
 let login = (user) => {
   return new Promise(async (resovle, reject) => {
     try {
+      // find user in database
       let checkUser = await db.User.findOne({
         where: { email: user.email },
       });
 
-      // Check password is avaliable
+      // Check user is avaliable
       if (!checkUser) {
         resovle({ signal: false, message: "User not avaliable" });
       }
 
-      // decode
+      // decode password
       let decryptPassword = decrypt(checkUser.password);
 
-      // compare password
-      let checkPassword = comparePassword(user.password, decryptPassword);
-
-      if (!checkPassword) {
+      // so sánh password trong database và password được thêm vào
+      if (!comparePassword(user.password, decryptPassword)) {
         resovle({ signal: false, message: "Password wrong" });
       }
 
@@ -97,17 +82,17 @@ let login = (user) => {
       let payload = { username: checkUser.fullname, type: checkUser.type };
 
       // generate accsess token
-      let _generateToken = await generateToken(
-        payload,
-        process.env.JWT_SECRET_KEY,
-        process.env.TOKEN_LIFETIME
-      );
+      let accessToken = jwt.sign(payload, process.env.JWT_ACCSESS_SECRET_KEY, {
+        expiresIn: process.env.TOKEN_LIFETIME,
+      });
 
-      if (!generateToken) {
-        resovle(false);
+      let refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET_KEY);
+
+      if (!accessToken) {
+        resovle({ signal: false, message: "Lỗi xác thực" });
       }
 
-      resovle(_generateToken);
+      resovle({ accessToken, refreshToken });
     } catch (error) {
       reject(error);
     }

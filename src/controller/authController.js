@@ -1,4 +1,6 @@
 import auth from "../service/authHandle";
+import jwt from "jsonwebtoken";
+
 // User Handle
 
 let signup = async (req, res) => {
@@ -20,19 +22,32 @@ let signup = async (req, res) => {
 let login = async (req, res) => {
   const token = await auth.login(req.body);
 
-  if (!token.singal) {
+  if (token.signal === false) {
     return res.status(200).json({
       message: token.message,
     });
   }
 
-  return res.status(200).json({
-    message: "Login",
-    token,
+  res.cookie("accessToken", token.accessToken, { httpOnly: true });
+  res.cookie("refreshToken", token.refreshToken, { httpOnly: true });
+
+  return res.redirect("/");
+};
+
+let authenToken = (req, res, next) => {
+  // get token
+  const accessToken = req.headers["authorization"];
+  // check token
+  if (!accessToken) res.sendStatus(401);
+
+  jwt.verify(accessToken, process.env.JWT_SECRET_KEY, (err, data) => {
+    if (err) res.sendStatus(403);
+    next();
   });
 };
 
 module.exports = {
   signup,
   login,
+  authenToken,
 };

@@ -1,7 +1,6 @@
 import express from "express";
 import viewEngine from "./config/viewEngine";
-import initRoutes from "./routes/routes";
-import initApi from "./routes/api";
+import initRoutes from "./routes/authAPI";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 const cookieParser = require("cookie-parser");
@@ -23,12 +22,11 @@ app.use(morgan());
 // config app
 // viewEngine
 viewEngine(app);
-// routes
-initRoutes(app);
+
 // api
-initApi(app);
-let port = process.env.PORT || 6969;
+initRoutes(app);
+let port = process.env.PORT_AUTHEN || 9696;
 
 app.listen(port, () => {
-  console.log("server run on port: ", port);
+  console.log("server atuthen run on port: ", port);
 });

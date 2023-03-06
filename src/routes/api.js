@@ -1,6 +1,7 @@
 import express from "express";
 import apiController from "../controller/apiController";
 var cors = require("cors");
+import auth from "../controller/authController";
 
 let router = express.Router();
 
@@ -8,7 +9,6 @@ let router = express.Router();
 import banner from "../controller/bannerController";
 import movie from "../controller/movieController";
 import theater from "../controller/theaterController";
-import auth from "../controller/authController";
 
 let initApi = (app) => {
   // use middleware "cors" Cross-origin resource sharing
@@ -24,8 +24,7 @@ let initApi = (app) => {
   router.delete("/deleteBanner/?bannerid=:bannerid", banner.deleteBanner);
 
   // Movie Route
-
-  router.get("/getAllMovie", movie.getAllMovie);
+  router.get("/getAllMovie", auth.authenToken, movie.getAllMovie);
   router.get("/getMovie/?movieid=:movieid", movie.getMovieById);
   router.get("/getMovie/?moviename=:moviename", movie.getMovieByName);
   router.get(
@@ -50,9 +49,7 @@ let initApi = (app) => {
   router.get("/getThaeters/system/?system=:system", theater.getTheaterInSystem);
   router.get("/getSeatsInTheater/?theater=:theater", theater.getSeatsInTheater);
 
-  // User Route
-  router.post("/user/signup", auth.signup);
-  router.post("/user/login", auth.login);
+  // middleware check JWT token
 
   return app.use("/api/v1/", router);
 };
